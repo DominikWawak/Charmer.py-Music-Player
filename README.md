@@ -4,7 +4,7 @@
 ## This is your best terminal music player!
 
 
-![image](/images/Screenshot 2021-12-06 at 10.47.31.png)
+![image](https://github.com/DominikWawak/Charmer.py-Muisc-Player/blob/master/images/Screenshot%202021-12-06%20at%2010.47.31.png?raw=true)
 
 Created with python for people who just want to listen to music
 Very simple interface
