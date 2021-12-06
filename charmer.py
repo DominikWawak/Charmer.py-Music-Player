@@ -176,7 +176,8 @@ def readFromFile():
     return json_obj
 
 def searchLibrary(searchString):
-    readFromFile()
+    if len(library)<=0:
+        readFromFile()
     
     found = []
     for i in library:
@@ -184,6 +185,43 @@ def searchLibrary(searchString):
         if searchString in i.tuneName or searchString in i.tuneGenre:
             found.append(i)
     return found
+
+
+def getPlaylists():
+    playL =[]
+    for g in library:
+        if not g.tunePlaylist in playL:
+            playL.append(g.tunePlaylist)
+    return playL
+
+
+def playPlayList(playlistName):
+    playLObjs =[]
+    for g in library:
+        if playlistName.upper() == g.tunePlaylist.upper():
+            playLObjs.append(g)
+    
+    for link in playLObjs:
+        playSong(link.tuneLink)
+        print("Now Playing ... " + link.tuneName +" "+ link.tuneGroup +" "+ link.tunePlaylist )
+        print(r"""     
+       _________
+     _|_________|_               
+    /             \             
+   | ###       ### |            
+   | ###       ### |
+    \_____________/
+        """)
+        time.sleep(1.5)
+        duration = player.get_length() / 1000
+        time.sleep(duration)
+        while True:
+            # state = player.get_state()
+            if "State.Ended" in str(player.get_state()):
+                print("Next Track")
+                break
+            continue
+
 
 
 
@@ -230,7 +268,9 @@ def menu():
   \ \  \____\ \  \ \  \ \  \ \  \ \  \\  \\ \  \    \ \  \ \  \_|\ \ \  \\  \| __\ \  \___|\/  /  /  
    \ \_______\ \__\ \__\ \__\ \__\ \__\\ _\\ \__\    \ \__\ \_______\ \__\\ _\|\__\ \__\ __/  / /    
     \|_______|\|__|\|__|\|__|\|__|\|__|\|__|\|__|     \|__|\|_______|\|__|\|__\|__|\|__||\___/ /     
-                                                                                        \|___|/                                                                                     
+                                                                                        \|___|/  
+
+    version 0.0.1 - Dominik Wawak                                                                                   
     """)
 
     print("""
@@ -294,10 +334,12 @@ def menu():
 
         
     elif(opt== 2):
+        
         print("This is your entire library ")
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         print()
-        readFromFile()
+        if len(library)<=0:
+            readFromFile()
         c=1
         for i in library:
             print(c,end=" ")
@@ -325,7 +367,7 @@ def menu():
             index = int(input("Enter the index of the song you want to delete --> "))
             if index == 0:
                 break
-        fullLib = readFromFile()
+        fullLib = library
         print(fullLib.pop(index-1))
         print()
         print(fullLib)
@@ -337,15 +379,34 @@ def menu():
         
         print()
     elif(opt== 7):
-        
+        pl =getPlaylists()
         print()
+        c=1
+        for p in pl:
+            print(str(c)+") ",end=" ")
+            print(p)
+            c+=1
+        
+        while True:
+            choice = input("would you like to play a playlist (Y/N) ")
+            if(choice.upper()=="Y"):
+                index = int(input("Pick a playlist --> "))
+                # print(library[index-1].tuneLink)
+                print(pl[index-1])
+                playPlayList(pl[index-1])
+                break
+            elif(choice.upper()=="N"):
+                break
     elif(opt== 8):
         query = input("Enter any song to play ==>")
         nowPlaying = searchSong(query)['title']
         player.stop()
         playSong(searchSong(query)['link'])
     elif(opt== 9):
-        print()
+        print(player.get_state())
+        print(type(player.get_state()))
+        print(str(player.get_state()))
+        
     elif(opt== 11):
         player.pause()
     elif(opt== 22):
